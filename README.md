@@ -1,3 +1,5 @@
+![CI](https://github.com/nanda1045/consistent-hashing-load-balancer/actions/workflows/ci.yml/badge.svg)
+
 # consistent-hashing-load-balancer
 
 Production-grade consistent hashing load balancer built with FastAPI + Redis, featuring dynamic node rebalancing, heartbeat-based failure detection, benchmark tooling, and pytest coverage.
@@ -214,7 +216,6 @@ Services emit JSON logs suitable for ingestion by log platforms.
 
 ## Resume Bullet Points
 
-- Built a production-grade consistent hashing load balancer in Python/FastAPI with Redis-backed service discovery and heartbeat-driven failure handling.
-- Implemented virtual-node consistent hash ring and dynamic rebalancing APIs that minimize key movement versus naive modulo sharding.
-- Designed benchmark tooling and test suite validating routing determinism, load distribution quality, and automatic dead-node eviction.
-- Containerized a multi-node cluster (Redis + load balancer + worker services) with Docker Compose and health-checked startup workflows.
+- Built a consistent-hashing load balancer in Python/FastAPI with Redis-backed service discovery, reducing key remapping by 94% versus naive modulo sharding on simulated node failure (10K keys, 18 to 17 nodes).
+- Implemented a virtual-node hash ring (150 vnodes per node) with an async heartbeat watcher that auto-evicts dead nodes and rebalances within 6 seconds of failure detection.
+- Load tested at 3,000 requests with 120 concurrent workers, sustaining 1,004 req/s with p95 latency of 135 ms and zero failures.
