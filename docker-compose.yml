@@ -1,0 +1,125 @@
+services:
+  redis:
+    image: redis:7.2-alpine
+    container_name: ch-redis
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  load-balancer:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ch-load-balancer
+    environment:
+      REDIS_URL: redis://redis:6379/0
+      VIRTUAL_NODES: 150
+      HEARTBEAT_TTL_SECONDS: 5
+      WATCHER_POLL_SECONDS: 2
+    ports:
+      - "8000:8000"
+    depends_on:
+      redis:
+        condition: service_healthy
+    command: ["uvicorn", "src.load_balancer:app", "--host", "0.0.0.0", "--port", "8000"]
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  worker-1:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ch-worker-1
+    environment:
+      REDIS_URL: redis://redis:6379/0
+      NODE_ID: worker-1
+      HEARTBEAT_INTERVAL_SECONDS: 2
+      HEARTBEAT_TTL_SECONDS: 5
+      VIRTUAL_NODES: 150
+    ports:
+      - "8101:8101"
+    depends_on:
+      redis:
+        condition: service_healthy
+    command: ["uvicorn", "src.worker:app", "--host", "0.0.0.0", "--port", "8101"]
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8101/health"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  worker-2:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ch-worker-2
+    environment:
+      REDIS_URL: redis://redis:6379/0
+      NODE_ID: worker-2
+      HEARTBEAT_INTERVAL_SECONDS: 2
+      HEARTBEAT_TTL_SECONDS: 5
+      VIRTUAL_NODES: 150
+    ports:
+      - "8102:8102"
+    depends_on:
+      redis:
+        condition: service_healthy
+    command: ["uvicorn", "src.worker:app", "--host", "0.0.0.0", "--port", "8102"]
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8102/health"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  worker-3:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ch-worker-3
+    environment:
+      REDIS_URL: redis://redis:6379/0
+      NODE_ID: worker-3
+      HEARTBEAT_INTERVAL_SECONDS: 2
+      HEARTBEAT_TTL_SECONDS: 5
+      VIRTUAL_NODES: 150
+    ports:
+      - "8103:8103"
+    depends_on:
+      redis:
+        condition: service_healthy
+    command: ["uvicorn", "src.worker:app", "--host", "0.0.0.0", "--port", "8103"]
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8103/health"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  worker-4:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ch-worker-4
+    environment:
+      REDIS_URL: redis://redis:6379/0
+      NODE_ID: worker-4
+      HEARTBEAT_INTERVAL_SECONDS: 2
+      HEARTBEAT_TTL_SECONDS: 5
+      VIRTUAL_NODES: 150
+    ports:
+      - "8104:8104"
+    depends_on:
+      redis:
+        condition: service_healthy
+    command: ["uvicorn", "src.worker:app", "--host", "0.0.0.0", "--port", "8104"]
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8104/health"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
