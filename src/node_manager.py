@@ -135,6 +135,8 @@ class NodeManager:
         keys = sample_keys or [f"rebalance-key-{i}" for i in range(10000)]
         while not self._watcher_stop.is_set():
             try:
+                # Reconcile ring membership with the Redis registry on each cycle.
+                await self.refresh_ring_from_redis()
                 dead_nodes = await self._find_dead_nodes()
                 await self._handle_dead_nodes(dead_nodes, keys)
             except Exception:
