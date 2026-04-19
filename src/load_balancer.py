@@ -5,6 +5,8 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, HTTPException, Query
 
+from src.logging_utils import install_request_logging, setup_json_logging
+
 from src.node_manager import (
     DEFAULT_HEARTBEAT_TTL,
     DEFAULT_REDIS_URL,
@@ -13,7 +15,7 @@ from src.node_manager import (
     NodeManager,
 )
 
-logging.basicConfig(level=logging.INFO)
+setup_json_logging(service_name="load-balancer")
 LOGGER = logging.getLogger(__name__)
 
 manager = NodeManager(
@@ -36,6 +38,7 @@ async def lifespan(_: FastAPI):
 
 
 app = FastAPI(title="Consistent Hashing Load Balancer", lifespan=lifespan)
+install_request_logging(app=app, logger=LOGGER, service_name="load-balancer")
 
 
 @app.get("/health")

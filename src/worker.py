@@ -7,6 +7,8 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, Query
 
+from src.logging_utils import install_request_logging, setup_json_logging
+
 from src.node_manager import (
     DEFAULT_HEARTBEAT_INTERVAL,
     DEFAULT_HEARTBEAT_TTL,
@@ -15,7 +17,7 @@ from src.node_manager import (
     NodeManager,
 )
 
-logging.basicConfig(level=logging.INFO)
+setup_json_logging(service_name="worker")
 LOGGER = logging.getLogger(__name__)
 
 NODE_ID = os.getenv("NODE_ID", "worker-unknown")
@@ -59,6 +61,7 @@ async def lifespan(_: FastAPI):
 
 
 app = FastAPI(title=f"Worker Node: {NODE_ID}", lifespan=lifespan)
+install_request_logging(app=app, logger=LOGGER, service_name="worker")
 
 
 @app.get("/health")

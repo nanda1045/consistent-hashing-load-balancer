@@ -178,6 +178,14 @@ GitHub Actions workflow runs on push and pull requests to main and executes:
 
 Workflow file: .github/workflows/ci.yml
 
+## Logging
+
+Services emit JSON logs suitable for ingestion by log platforms.
+
+- includes: timestamp, level, logger, message, service
+- request logs include: request_id, method, path, status_code, duration_ms, client_ip
+- request_id is returned as `x-request-id` response header
+
 ## Resume Bullet Points
 
 - Built a production-grade consistent hashing load balancer in Python/FastAPI with Redis-backed service discovery and heartbeat-driven failure handling.
