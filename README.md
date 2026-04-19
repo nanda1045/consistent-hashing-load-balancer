@@ -167,6 +167,17 @@ Run all tests:
 pytest -q
 ```
 
+## CI
+
+GitHub Actions workflow runs on push and pull requests to main and executes:
+
+- dependency install
+- pytest suite
+- benchmark smoke run
+- docker compose config validation
+
+Workflow file: .github/workflows/ci.yml
+
 ## Resume Bullet Points
 
 - Built a production-grade consistent hashing load balancer in Python/FastAPI with Redis-backed service discovery and heartbeat-driven failure handling.
