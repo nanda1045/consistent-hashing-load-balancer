@@ -214,7 +214,7 @@ Services emit JSON logs suitable for ingestion by log platforms.
 - request logs include: request_id, method, path, status_code, duration_ms, client_ip
 - request_id is returned as `x-request-id` response header
 
-## Resume Bullet Points
+
 
 - Built a consistent-hashing load balancer in Python/FastAPI with Redis-backed service discovery, reducing key remapping by 94% versus naive modulo sharding on simulated node failure (10K keys, 18 to 17 nodes).
 - Implemented a virtual-node hash ring (150 vnodes per node) with an async heartbeat watcher that auto-evicts dead nodes and rebalances within 6 seconds of failure detection.
