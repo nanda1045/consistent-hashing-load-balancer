@@ -45,7 +45,9 @@ consistent-hashing-load-balancer/
 │   └── worker.py
 ├── scripts/
 │   ├── benchmark.py
-│   └── demo_rebalance.sh
+│   ├── demo_rebalance.sh
+│   ├── exercise_api.py
+│   └── load_test.py
 ├── tests/
 │   ├── test_ring.py
 │   ├── test_rebalancing.py
@@ -115,6 +117,7 @@ pip install -r requirements.txt
 pytest -q
 python scripts/benchmark.py
 python scripts/exercise_api.py --with-failure-demo
+python scripts/load_test.py --requests 3000 --concurrency 120
 ```
 
 ## API Endpoints
@@ -154,6 +157,29 @@ It prints:
 | Keys remapped after 1 node failure (10,000 keys, 18->17 nodes) | ~550 | ~9,400 |
 | Reduction in remapped keys | ~94% | baseline |
 | Load balance std dev (lower is better) | low | moderate |
+
+## Load Testing
+
+Run a concurrent API load test against `POST /route`:
+
+```bash
+python scripts/load_test.py --requests 3000 --concurrency 120
+```
+
+Example measured output (local Docker run):
+
+| Metric | Value |
+|---|---:|
+| Total Requests | 3000 |
+| Concurrency | 120 |
+| Success | 3000 |
+| Failure | 0 |
+| Duration (s) | 2.99 |
+| Throughput (req/s) | 1004.91 |
+| p50 Latency (ms) | 114.66 |
+| p95 Latency (ms) | 135.62 |
+| Min Latency (ms) | 31.69 |
+| Max Latency (ms) | 164.56 |
 
 ## Tests
 
