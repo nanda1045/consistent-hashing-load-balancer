@@ -79,6 +79,33 @@ curl -X POST "http://localhost:8000/route?key=user:1001"
 bash scripts/demo_rebalance.sh
 ```
 
+### 4. Full API exercise (smoke + failover + recovery)
+
+```bash
+python scripts/exercise_api.py --with-failure-demo
+```
+
+Example output:
+
+```text
+Load Balancer API Exercise
+- Health: {'status': 'ok'}
+- Initial Nodes: worker-1, worker-2, worker-3, worker-4
+- Route user:1001: worker-1
+- Route user:1001 (repeat): worker-1
+- Route user:2002: worker-4
+- Temp Node Added: True
+- Temp Node Removed: True
+- Current Nodes: worker-1, worker-2, worker-3, worker-4
+- Metrics Std Dev: 222.31
+
+Failure/Recovery Check
+- After worker-2 stop: worker-1, worker-3, worker-4
+- After worker-2 restart: worker-1, worker-2, worker-3, worker-4
+
+API exercise completed successfully.
+```
+
 ## Local Development
 
 ```bash
@@ -87,6 +114,7 @@ source .venv/bin/activate
 pip install -r requirements.txt
 pytest -q
 python scripts/benchmark.py
+python scripts/exercise_api.py --with-failure-demo
 ```
 
 ## API Endpoints
